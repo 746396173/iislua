@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="lua-iis-module : It brings the power of Lua scripting in your IIS.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>lua-iis-module</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/shibayan/lua-iis-module">View on GitHub</a>
+
+          <h1 id="project_title">lua-iis-module</h1>
+          <h2 id="project_tagline">It brings the power of Lua scripting in your IIS.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/shibayan/lua-iis-module/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/shibayan/lua-iis-module/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="lua-iis-module" class="anchor" href="#lua-iis-module" aria-hidden="true"><span class="octicon octicon-link"></span></a>lua-iis-module</h1>
+
+<p>It brings the power of Lua scripting in your IIS.</p>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<p>Download MSI file from following page. (x86 &amp; x64 version)</p>
+
+<p><a href="https://github.com/shibayan/lua-iis-module/releases">https://github.com/shibayan/lua-iis-module/releases</a></p>
+
+<h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h2>
+
+<h3>
+<a id="webconfig" class="anchor" href="#webconfig" aria-hidden="true"><span class="octicon octicon-link"></span></a>Web.config</h3>
+
+<div class="highlight highlight-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>utf-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">configuration</span>&gt;
+  &lt;<span class="pl-ent">system</span>.webServer&gt;
+    &lt;<span class="pl-ent">iislua</span>&gt;
+      &lt;<span class="pl-ent">beginRequest</span> <span class="pl-e">scriptPath</span>=<span class="pl-s"><span class="pl-pds">"</span>C:\inetpub\beginrequest.lua<span class="pl-pds">"</span></span> /&gt;
+      &lt;<span class="pl-ent">mapPath</span> <span class="pl-e">scriptPath</span>=<span class="pl-s"><span class="pl-pds">"</span>C:\inetpub\mappath.lua<span class="pl-pds">"</span></span> /&gt;
+    &lt;/<span class="pl-ent">iislua</span>&gt;
+  &lt;/<span class="pl-ent">system</span>.webServer&gt;
+&lt;/<span class="pl-ent">configuration</span>&gt;</pre></div>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="return-status-code" class="anchor" href="#return-status-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Return status code</h3>
+
+<div class="highlight highlight-lua"><pre>iis.<span class="pl-c1">exit</span>(<span class="pl-c1">404</span>)</pre></div>
+
+<h3>
+<a id="redirect" class="anchor" href="#redirect" aria-hidden="true"><span class="octicon octicon-link"></span></a>Redirect</h3>
+
+<div class="highlight highlight-lua"><pre>iis.<span class="pl-c1">redirect</span>(<span class="pl-s"><span class="pl-pds">"</span>http://buchizo.wordpress.com/<span class="pl-pds">"</span></span>)</pre></div>
+
+<h3>
+<a id="refuse-http-method" class="anchor" href="#refuse-http-method" aria-hidden="true"><span class="octicon octicon-link"></span></a>Refuse http method</h3>
+
+<div class="highlight highlight-lua"><pre><span class="pl-k">if</span> iis.<span class="pl-smi">req</span>.<span class="pl-c1">http_method</span>() <span class="pl-k">~=</span> <span class="pl-s"><span class="pl-pds">"</span>POST<span class="pl-pds">"</span></span> <span class="pl-k">then</span>
+    iis.<span class="pl-c1">exit</span>(<span class="pl-c1">405</span>)
+<span class="pl-k">end</span></pre></div>
+
+<h3>
+<a id="cross-domain-access-control" class="anchor" href="#cross-domain-access-control" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cross domain access control</h3>
+
+<div class="highlight highlight-lua"><pre>req_headers <span class="pl-k">=</span> iis.<span class="pl-smi">req</span>.<span class="pl-c1">get_headers</span>()
+
+<span class="pl-k">if</span> req_headers[<span class="pl-s"><span class="pl-pds">"</span>Origin<span class="pl-pds">"</span></span>] <span class="pl-k">~=</span> <span class="pl-c1">nil</span> <span class="pl-k">then</span>
+    iis.<span class="pl-smi">resp</span>.<span class="pl-c1">set_header</span>(<span class="pl-s"><span class="pl-pds">"</span>Access-Control-Allow-Origin<span class="pl-pds">"</span></span>, req_headers[<span class="pl-s"><span class="pl-pds">"</span>Origin<span class="pl-pds">"</span></span>])
+<span class="pl-k">end</span></pre></div>
+
+<h3>
+<a id="rewrite-to-other-url" class="anchor" href="#rewrite-to-other-url" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rewrite to other url</h3>
+
+<div class="highlight highlight-lua"><pre><span class="pl-k">if</span> iis.<span class="pl-smi">req</span>.<span class="pl-c1">get_url</span>() <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>/<span class="pl-pds">"</span></span> <span class="pl-k">then</span>
+   iis.<span class="pl-c1">exec</span>(<span class="pl-s"><span class="pl-pds">"</span>/iisstart.htm<span class="pl-pds">"</span></span>)
+<span class="pl-k">end</span></pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">lua-iis-module maintained by <a href="https://github.com/shibayan">shibayan</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
